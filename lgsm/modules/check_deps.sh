@@ -292,7 +292,7 @@ fn_deps_detector() {
 		# Is java already installed?
 		if [ -n "${javaversion}" ]; then
 			javamajorversion="$(echo "${javaversion}" | grep -Eo 'version "[0-9]+' | grep -Eo '[0-9]+' | head -1)"
-			if [ "${shortname}" == "hyt" ] && { [ -z "${javamajorversion}" ] || [ "${javamajorversion}" -lt "25" ]; }; then
+			if [[ "${deptocheck}" =~ ^(openjdk|java)-25- ]] && { [ -z "${javamajorversion}" ] || [ "${javamajorversion}" -lt "25" ]; }; then
 				# Java 25 installed but not the active java: installing it again would not change that.
 				if compgen -G "/usr/lib/jvm/*25*/bin/java" > /dev/null; then
 					depstatus=0
@@ -424,12 +424,12 @@ if [ "${depcheckonly}" != "1" ]; then
 		fi
 	fi
 
-	# Hytale needs Java 25, which Ubuntu before 22.04 and Debian before 13 do not package.
-	if [ "${shortname}" == "hyt" ]; then
-		if { [ "${distroid}" == "ubuntu" ] && [ "${distroversion}" != "22.04" ] && dpkg --compare-versions "${distroversion}" "lt" "24.04"; } || { [ "${distroid}" == "debian" ] && dpkg --compare-versions "${distroversion}" "lt" "13"; }; then
+	# Hytale and Minecraft need Java 25, which Ubuntu before 22.04, Debian before 13 and RHEL before 9 do not package.
+	if [ "${shortname}" == "hyt" ] || [ "${shortname}" == "mc" ] || [ "${shortname}" == "pmc" ]; then
+		if { [ "${distroid}" == "ubuntu" ] && [ "${distroversion}" != "22.04" ] && dpkg --compare-versions "${distroversion}" "lt" "24.04"; } || { [ "${distroid}" == "debian" ] && dpkg --compare-versions "${distroversion}" "lt" "13"; } || { [ -n "${distroversionrh}" ] && [ "${distroversionrh}" -lt "9" ]; }; then
 			if ! echo "${javaversion}" | grep -Eq 'version "(2[5-9]|[3-9][0-9])'; then
 				fn_print_warning_nl "${gamename} requires Java 25, which ${distroname} does not provide."
-				echo -e "Install Java 25 manually or upgrade to Ubuntu 22.04+ or Debian 13+."
+				echo -e "Install Java 25 manually or upgrade to Ubuntu 22.04+, Debian 13+ or a RHEL 9 based distro."
 				fn_script_log_warn "${gamename} requires Java 25, which ${distroname} does not provide."
 			fi
 		fi

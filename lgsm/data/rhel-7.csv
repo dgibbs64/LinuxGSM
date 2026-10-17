@@ -55,7 +55,6 @@ hl2dm
 hldm
 hldms
 hw,zlib-devel
-hyt,java-25-openjdk
 hz
 ins
 inss
@@ -69,7 +68,6 @@ kf
 kf2
 l4d
 l4d2
-mc,java-11-openjdk
 mcb,libnsl
 mcv
 mh
@@ -86,7 +84,6 @@ onset,mariadb-connector-c
 opfor
 pc
 pc2
-pmc,java-11-openjdk
 pvkii
 pvr,libcxx
 pz,java-11-openjdk rng-tools
